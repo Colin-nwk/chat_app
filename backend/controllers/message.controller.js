@@ -1,5 +1,6 @@
 import { validateMessage } from "../validations/message.validation.js";
 import Message from "../models/message.model.js";
+import Conversation from "../models/conversation.model.js";
 export const sendMessage = async (req, res) => {
   try {
     const receiverId = req.params.id;
@@ -14,9 +15,21 @@ export const sendMessage = async (req, res) => {
     if (!isValid) {
       return res.status(422).json(errors);
     }
+    let conversation = await Conversation.findOne({
+      participants: { $all: [senderId, receiverId] },
+    });
+    if (!conversation) {
+      conversation = await Conversation.create({
+        participants: [senderId, receiverId],
+      });
+    }
 
     const newMessage = new Message({ senderId, receiverId, message });
-    await newMessage.save();
+
+    if (newMessage) {
+      conversation.messages.push(newMessage._id);
+    }
+    // await newMessage.save();
 
     res.status(201).json(newMessage);
   } catch (error) {
