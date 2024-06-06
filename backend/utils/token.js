@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import User from "../models/user.model.js";
 
 dotenv.config();
 
@@ -25,14 +26,32 @@ export const generateTokenAndCookie = (userId, res) => {
   }
 };
 
-// Helper function to verify and decode the token
-export const verifyToken = (token) => {
+export const verifyToken = async (req, res, next) => {
+  const token = req.cookies.jwt;
+
+  if (!token) {
+    return res.status(401).json({ error: "Unauthorized - No token provided" });
+  }
+
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    return decoded;
-  } catch (error) {
-    console.error("Error in verifyToken:", error.message);
-    return null;
+    const user = await User.findById(decoded.userId).select("-password");
+
+    if (!user) {
+      return res.status(404).json({ error: "Unauthorized - User not found" });
+    }
+
+    req.user = user;
+    next();
+  } catch (err) {
+    if (err instanceof jwt.JsonWebTokenError) {
+      return res.status(401).json({ error: "Unauthorized - Invalid token" });
+    } else if (err instanceof jwt.TokenExpiredError) {
+      return res.status(401).json({ error: "Unauthorized - Token expired" });
+    } else {
+      console.error(err);
+      return res.status(500).json({ error: "Internal server error" });
+    }
   }
 };
 
