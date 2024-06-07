@@ -20,8 +20,7 @@ export const signup = async (req, res) => {
     if (!isValid) return res.status(422).json(errors);
 
     const userExists = await User.findOne({ username });
-    if (userExists)
-      return res.status(400).json({ username: "Username already exists" });
+    if (userExists) return res.status(400).json("Username already exists");
 
     const boyProfilePic = `https://avatar.iran.liara.run/public/boy?username=${username}`;
     const girlProfilePic = `https://avatar.iran.liara.run/public/girl?username=${username}`;
@@ -50,7 +49,7 @@ export const signup = async (req, res) => {
     });
   } catch (error) {
     console.error(error.message);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json("Internal server error");
   }
 };
 
@@ -70,11 +69,10 @@ export const login = async (req, res) => {
     if (!isValid) return res.status(400).json(errors);
 
     const user = await User.findOne({ username });
-    if (!user) return res.status(404).json({ username: "User not found" });
+    if (!user) return res.status(404).json("User not found");
 
     const isMatch = await bcrypt.compare(password, user?.password || "");
-    if (!isMatch)
-      return res.status(400).json({ password: "Invalid credentials" });
+    if (!isMatch) return res.status(400).json("Invalid credentials");
 
     generateTokenAndCookie(user._id, res);
 
@@ -90,7 +88,7 @@ export const login = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json("Internal server error");
   }
 };
 
