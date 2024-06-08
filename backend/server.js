@@ -17,6 +17,9 @@ app.use(cookieParser());
 app.use("/api/auth", authRoute);
 app.use("/api/message", messageRoute);
 app.use("/api/user", userRoute);
+app.get("/api/test", (req, res) => {
+  res.json("success");
+});
 
 app.use(express.static(path.join(__dirname, "/frontend/dist")));
 app.get("*", (req, res) => {
