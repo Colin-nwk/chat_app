@@ -2,6 +2,7 @@ import { validateMessage } from "../validations/message.validation.js";
 import Message from "../models/message.model.js";
 import Conversation from "../models/conversation.model.js";
 import mongoose from "mongoose";
+import { getReceiverSocketId, io } from "../socket/socket.js";
 export const sendMessage = async (req, res) => {
   try {
     const receiverId = req.params.id;
@@ -16,34 +17,31 @@ export const sendMessage = async (req, res) => {
     if (!isValid) {
       return res.status(422).json(errors);
     }
-    // Attempt to find existing conversation efficiently
     const existingConversation = await Conversation.findOne({
       participants: { $all: [senderId, receiverId] },
-    }).sort({ updatedAt: -1 }); // Prioritize latest conversation
+    }).sort({ updatedAt: -1 });
 
     let conversation;
 
     if (existingConversation) {
       conversation = existingConversation;
     } else {
-      // Create conversation if not found
       conversation = await Conversation.create({
         participants: [senderId, receiverId],
       });
     }
 
-    // Create new message object
     const newMessage = new Message({ senderId, receiverId, message });
 
     if (newMessage) {
-      // Efficiently update conversation with new message ID (assuming _id property)
       conversation.messages.push(newMessage._id);
-
-      //TODO: socket.io
       await Promise.all([conversation.save(), newMessage.save()]);
     }
 
-    // Send successful response
+    const receiiverSocketId = getReceiverSocketId(receiverId);
+    if (receiiverSocketId) {
+      io.to(receiiverSocketId).emit("newMessage", newMessage);
+    }
     res.status(201).json(newMessage);
   } catch (error) {
     console.error(error);

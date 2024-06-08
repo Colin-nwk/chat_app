@@ -26,3 +26,30 @@ body{
 ::-webkit-scrollbar-thumb:hover{
     background: royalblue;
 }
+
+
+.shake {
+  animation: shake ease-in-out 1.5s ;
+  backface-visibility: hidden;
+  perspective: 1000px;
+  transform: translate3d(0,0,0);
+}
+
+@keyframes shake {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-3px);
+  }
+  50% {
+    transform: translateX(3px);
+  }
+  75% {
+    transform: translateX(-3px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+
+}

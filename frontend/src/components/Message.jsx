@@ -13,8 +13,7 @@ const Message = ({ message }) => {
     : selectedConversation?.profilePicture;
   const bubbleBgColor = fromMe ? "chat-bubble-success" : "chat-bubble-primary";
   const formattedTime = extractTime(message.createdAt);
-  console.log(fromMe);
-  console.log(formattedTime);
+  const shakeClass = message.isNew ? "shake" : "";
 
   return (
     <div>
@@ -28,7 +27,7 @@ const Message = ({ message }) => {
           </div>
         </div>
 
-        <div className={`chat-bubble ${bubbleBgColor} pb-2`}>
+        <div className={`chat-bubble ${bubbleBgColor} ${shakeClass} pb-2`}>
           {message?.message}
         </div>
         <time className="text-xs opacity-50">{formattedTime}</time>
