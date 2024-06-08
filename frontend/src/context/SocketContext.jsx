@@ -56,7 +56,7 @@ export const SocketContextProvider = ({ children }) => {
 
       if (!existingSocket || existingSocket.userId !== userId) {
         // Create a new socket if it doesn't exist or the userId changes
-        const newSocket = io("http://localhost:5001", {
+        const newSocket = io("https://chat-app-kcdr.onrender.com", {
           query: { userId },
         });
 
