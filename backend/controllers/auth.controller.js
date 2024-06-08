@@ -102,6 +102,7 @@ export const logout = (req, res) => {
   try {
     clearTokenCookie(res);
     res.status(204).json({ message: "Logged out successfully" });
+    console.log("logout");
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error" });

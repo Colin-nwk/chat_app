@@ -117,7 +117,11 @@ const Signup = () => {
               type="submit"
               className="btn btn-outline btn-primary btn-block border-white/30 hover:bg-indigo-600"
             >
-              {loading ? "Loading..." : "Signup"}
+              {loading ? (
+                <span className="loading loading-spinner text-info"></span>
+              ) : (
+                "SIGNUP"
+              )}
             </button>
           </form>
         </div>

@@ -2,11 +2,11 @@ import { useState, useCallback } from "react";
 import toast from "react-hot-toast";
 import { useAuthContext } from "../context/AuthContext";
 
-const useSignup = () => {
+const useLogin = () => {
   const [loading, setLoading] = useState(false);
   const { setAuthUser } = useAuthContext();
 
-  const signup = useCallback(
+  const login = useCallback(
     async (formData) => {
       const success = validateFormData(formData);
 
@@ -16,7 +16,7 @@ const useSignup = () => {
 
       try {
         setLoading(true);
-        const response = await fetch("/api/auth/signup", {
+        const response = await fetch("/api/auth/login", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -44,32 +44,16 @@ const useSignup = () => {
     [setAuthUser]
   );
 
-  return { loading, signup };
+  return { loading, login };
 };
 
 const validateFormData = (formData) => {
-  if (
-    !formData.fullName ||
-    !formData.username ||
-    !formData.password ||
-    !formData.gender ||
-    !formData.confirmPassword
-  ) {
+  if (!formData.username || !formData.password) {
     toast.error("Please fill all fields");
-    return false;
-  }
-
-  if (formData.password.length < 6) {
-    toast.error("Password must be greater than 6 characters");
-    return false;
-  }
-
-  if (formData.confirmPassword !== formData.password) {
-    toast.error("Passwords do not match");
     return false;
   }
 
   return true;
 };
 
-export default useSignup;
+export default useLogin;

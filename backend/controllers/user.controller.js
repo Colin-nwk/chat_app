@@ -1,6 +1,4 @@
 import User from "../models/user.model.js";
-import Conversation from "../models/conversation.model.js";
-import mongoose from "mongoose";
 
 export const getUsersForSidebar = async (req, res) => {
   try {
@@ -12,6 +10,6 @@ export const getUsersForSidebar = async (req, res) => {
     res.status(200).json(users);
   } catch (error) {
     console.error("error in getting users :  ", error.message);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json("Internal server error");
   }
 };
