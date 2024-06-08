@@ -61,7 +61,7 @@ export const clearTokenCookie = (res) => {
     expires: new Date(0),
     httpOnly: true,
     sameSite: "strict",
-    secure: process.env.NODE_ENV === "production",
+    secure: process.env.NODE_ENV !== "development",
     path: "/",
   });
 };
